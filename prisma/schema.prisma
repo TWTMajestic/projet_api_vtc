@@ -45,8 +45,6 @@ model Vehicle {
   modelId     String
   seller      Seller?   @relation(fields: [sellerId], references: [id])
   sellerId    String?
-  vin         String?   @unique
-  registration String?
   mileageKm   Int?
   priceEUR    Decimal?  @db.Decimal(10, 2)
   color       String?
