@@ -1,15 +1,17 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
 
 export const runtime = 'edge'
 
 export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
+
   try {
     const seller = await prisma.seller.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         vehicles: {
           select: {
@@ -37,15 +39,17 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
+
   try {
     const payload = await request.json()
     const { name, email, phone, website } = payload ?? {}
 
     const seller = await prisma.seller.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         email: email ?? null,
@@ -75,12 +79,14 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
+
   try {
     await prisma.seller.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return new Response(null, { status: 204 })

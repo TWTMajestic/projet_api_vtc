@@ -1,15 +1,17 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
 
 export const runtime = 'edge'
 
 export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
+
   try {
     const vehicle = await prisma.vehicle.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         model: {
           select: {
@@ -42,9 +44,11 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
+
   try {
     const payload = await request.json()
     const {
@@ -59,7 +63,7 @@ export async function PUT(
     } = payload ?? {}
 
     const vehicle = await prisma.vehicle.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         modelId,
         sellerId: sellerId ?? null,
@@ -108,12 +112,14 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
+
   try {
     await prisma.vehicle.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return new Response(null, { status: 204 })
