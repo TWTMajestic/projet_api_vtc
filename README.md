@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This project is built with [Next.js](https://nextjs.org) and uses [Prisma](https://www.prisma.io/) as the ORM to manage a VTC (véhicule de transport avec chauffeur) domain.
 
-## Getting Started
+## Prérequis
 
-First, run the development server:
+- Node.js >= 18.18.0
+- Une base PostgreSQL accessible via la variable d’environnement `DATABASE_URL` (voir `.env`)
+
+## Scripts principaux
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev             # Lancer Next.js en mode développement
+npm run build           # Compiler l’application pour la production
+npm run start           # Démarrer le serveur en production
+npm run lint            # Vérifier le linting
+npm run prisma:generate # Générer le client Prisma
+npm run prisma:migrate  # Appliquer les migrations en développement
+npm run prisma:studio   # Ouvrir Prisma Studio
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Configuration Prisma
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Le schéma se trouve dans `prisma/schema.prisma`.
+- Le client généré est émis dans `app/generated/prisma`.
+- `app/lib/prisma.ts` expose une instance unique de `PrismaClient` avec l’extension [Prisma Accelerate](https://www.prisma.io/accelerate).
+- Assurez-vous que `DATABASE_URL` est défini dans `.env` (exemple : `postgresql://user:password@localhost:5432/projet_api_vtc?schema=public`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Créer / mettre à jour la base
 
-## Learn More
+1. Modifiez ou ajoutez vos modèles dans `prisma/schema.prisma`.
+2. Générez le client :
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm run prisma:generate
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Créez une migration et appliquez-la :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm run prisma:migrate --name <nom-de-migration>
+   ```
 
-## Deploy on Vercel
+4. Facultatif : lancez Prisma Studio pour inspecter les données :
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run prisma:studio
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Utilisation dans le code
+
+```ts
+// app/lib/prisma.ts expose déjà une instance partagée
+import prisma from "@/app/lib/prisma";
+
+export async function listDrivers() {
+  return prisma.driver.findMany({
+    where: { status: "APPROVED" },
+    include: { vehicles: true },
+  });
+}
+```
+
+## Domaines modélisés
+
+- `User` : représente les passagers, les chauffeurs et les administrateurs.
+- `Driver` : profil conducteur avec état de validation, note et véhicules.
+- `Vehicle` : informations véhicule, plaque et capacité.
+- `Ride` : courses avec géolocalisation, statut et tarification.
+- Enums `UserRole`, `DriverStatus`, `RideStatus` pour les états clés.
+
+## Aller plus loin
+
+- [Documentation Next.js](https://nextjs.org/docs)
+- [Documentation Prisma](https://www.prisma.io/docs)
+- [Prisma Accelerate](https://www.prisma.io/accelerate)
