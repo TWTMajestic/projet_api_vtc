@@ -38,6 +38,12 @@ export default async function HomePage() {
         <p className="mt-4 text-sm text-slate-600">
           Espace réservé aux utilisateurs authentifiés. Contenu à venir.
         </p>
+        <p className="mt-4 text-sm text-slate-600">
+          Email: {session.email}
+        </p>
+        <p className="mt-4 text-sm text-slate-600">
+          Nom: {session.name}
+        </p>
       </section>
     </main>
   )
