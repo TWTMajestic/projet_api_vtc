@@ -1,27 +1,30 @@
 import { NextResponse } from 'next/server';
 
 type Params = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export async function GET(_: Request, { params }: Params) {
+  const { id } = await params;
   return NextResponse.json({
-    message: `Fetch seller ${params.id} endpoint not implemented yet.`,
+    message: `Fetch seller ${id} endpoint not implemented yet.`,
   });
 }
 
 export async function PATCH(_: Request, { params }: Params) {
+  const { id } = await params;
   return NextResponse.json(
-    { message: `Update seller ${params.id} endpoint not implemented yet.` },
+    { message: `Update seller ${id} endpoint not implemented yet.` },
     { status: 501 },
   );
 }
 
 export async function DELETE(_: Request, { params }: Params) {
+  const { id } = await params;
   return NextResponse.json(
-    { message: `Delete seller ${params.id} endpoint not implemented yet.` },
+    { message: `Delete seller ${id} endpoint not implemented yet.` },
     { status: 501 },
   );
 }
