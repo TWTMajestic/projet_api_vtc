@@ -1,29 +1,68 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
+import { prisma } from '@/app/lib/prisma'
 
-type Params = {
-  params: {
-    id: string;
-  };
-};
+export const runtime = 'nodejs'
 
-export async function GET(_: Request, { params }: Params) {
-  return NextResponse.json({
-    message: `Fetch brand ${params.id} endpoint not implemented yet.`,
-  });
+type Props = {
+  params: Promise<{
+    id: string
+  }>
 }
 
-export async function PATCH(_: Request, { params }: Params) {
+export async function GET(_: Request, props: Props) {
+  try {
+    const params = await props.params
+    // Decode the brand name from the URL (e.g. "Mercedes-Benz" -> "Mercedes-Benz")
+    const brandName = decodeURIComponent(params.id)
+
+    // Check if any model exists with this brand
+    const model = await prisma.model.findFirst({
+      where: {
+        brand: {
+          equals: brandName,
+          mode: 'insensitive' // Case-insensitive search
+        }
+      },
+      select: {
+        brand: true
+      }
+    })
+
+    if (!model) {
+      return NextResponse.json({ error: 'Marque introuvable' }, { status: 404 })
+    }
+
+    return NextResponse.json({
+      data: {
+        id: model.brand,
+        name: model.brand
+      }
+    })
+  } catch (error) {
+    console.error('[brands/:id.GET]', error)
+    return NextResponse.json(
+      { error: 'Impossible de récupérer la marque' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(_: Request, props: Props) {
+  const params = await props.params
   return NextResponse.json(
-    { message: `Update brand ${params.id} endpoint not implemented yet.` },
-    { status: 501 },
-  );
+    {
+      error: `Not Implemented. Cannot update brand '${params.id}' directly.`
+    },
+    { status: 501 }
+  )
 }
 
-export async function DELETE(_: Request, { params }: Params) {
+export async function DELETE(_: Request, props: Props) {
+  const params = await props.params
   return NextResponse.json(
-    { message: `Delete brand ${params.id} endpoint not implemented yet.` },
-    { status: 501 },
-  );
+    {
+      error: `Not Implemented. Cannot delete brand '${params.id}' directly.`
+    },
+    { status: 501 }
+  )
 }
-
-
