@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
 import { Prisma } from '@/app/generated/prisma/client'
 
-type Params = {
+type Props = {
   params: Promise<{
     id: string
   }>
@@ -24,11 +24,11 @@ const serializeVehicle = (vehicle: VehicleWithRelations) => ({
 
 export const runtime = 'nodejs'
 
-export async function GET(_: NextRequest, { params }: Params) {
+export async function GET(_: NextRequest, props: Props) {
   try {
-    const { id } = await params;
+    const params = await props.params
     const vehicle = await prisma.vehicle.findUnique({
-      where: { id },
+      where: { id: params.id },
       include: vehicleInclude
     })
 
@@ -52,9 +52,9 @@ export async function GET(_: NextRequest, { params }: Params) {
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: Params) {
+export async function PATCH(request: NextRequest, props: Props) {
   try {
-    const { id } = await params;
+    const params = await props.params
     const body = await request.json()
 
     const data: Prisma.VehicleUpdateInput = {}
@@ -145,7 +145,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     }
 
     const vehicle = await prisma.vehicle.update({
-      where: { id },
+      where: { id: params.id },
       data,
       include: vehicleInclude
     })
@@ -178,11 +178,11 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   }
 }
 
-export async function DELETE(_: NextRequest, { params }: Params) {
+export async function DELETE(_: NextRequest, props: Props) {
   try {
-    const { id } = await params;
+    const params = await props.params
     await prisma.vehicle.delete({
-      where: { id }
+      where: { id: params.id }
     })
 
     return new NextResponse(null, { status: 204 })
@@ -204,4 +204,3 @@ export async function DELETE(_: NextRequest, { params }: Params) {
     )
   }
 }
-
