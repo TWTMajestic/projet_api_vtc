@@ -12,7 +12,7 @@ export default async function EditSellerPage({
   const session = await getServerSession()
 
   if (!session) {
-    redirect('/')
+    redirect('/login')
   }
 
   if (session.role !== 'ADMIN') {

@@ -7,7 +7,7 @@ export default async function CreateUserPage() {
   const session = await getServerSession()
 
   if (!session) {
-    redirect('/')
+    redirect('/login')
   }
 
   if (session.role !== 'ADMIN') {

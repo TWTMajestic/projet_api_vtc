@@ -18,6 +18,8 @@ export default async function HomePage({
   const params = await Promise.resolve(searchParams)
   const currentMode = (params.mode || 'vehicles') as 'vehicles' | 'models' | 'sellers' | 'users'
   const isAdmin = session.role === 'ADMIN'
+  
+  console.log('[DEBUG] session.role:', session.role, '| isAdmin:', isAdmin)
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">

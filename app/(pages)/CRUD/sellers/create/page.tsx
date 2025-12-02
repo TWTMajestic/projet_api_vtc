@@ -7,7 +7,7 @@ export default async function CreateSellerPage() {
   const session = await getServerSession()
 
   if (!session) {
-    redirect('/')
+    redirect('/login')
   }
 
   if (session.role !== 'ADMIN') {

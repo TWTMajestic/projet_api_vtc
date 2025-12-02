@@ -7,7 +7,7 @@ export default async function CreateModelPage() {
   const session = await getServerSession()
 
   if (!session) {
-    redirect('/')
+    redirect('/login')
   }
 
   return (

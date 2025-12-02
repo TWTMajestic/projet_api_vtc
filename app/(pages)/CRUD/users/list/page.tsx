@@ -8,7 +8,7 @@ export default async function UsersListPage() {
   const session = await getServerSession()
 
   if (!session) {
-    redirect('/')
+    redirect('/login')
   }
 
   if (session.role !== 'ADMIN') {

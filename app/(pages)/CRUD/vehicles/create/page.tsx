@@ -9,7 +9,7 @@ export default async function CreateVehiclePage() {
   const session = await getServerSession()
 
   if (!session) {
-    redirect('/')
+    redirect('/login')
   }
 
   // Récupérer les modèles et les vendeurs

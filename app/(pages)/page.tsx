@@ -11,14 +11,16 @@ export default async function HomePage({
 }) {
   const session = await getServerSession()
   const isAuthenticated = !!session
+  const isAdmin = session?.role === 'ADMIN'
 
   const params = await Promise.resolve(searchParams)
-  const currentMode = (params.mode || 'vehicles') as 'vehicles' | 'models' | 'sellers'
+  const currentMode = (params.mode || 'vehicles') as 'vehicles' | 'models' | 'sellers' | 'users'
+
+  console.log('[DEBUG] session.role:', session?.role, '| isAdmin:', isAdmin)
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-slate-800">Tableau de bord</h1>
@@ -36,11 +38,9 @@ export default async function HomePage({
           <p className="text-slate-600">Gérez vos données avec les opérations CRUD</p>
         </div>
 
-        {/* Navbar */}
-        <Navbar />
+        <Navbar isAdmin={isAdmin} />
 
-        {/* CRUD Actions */}
-        <CRUDActions mode={currentMode} isAuthenticated={isAuthenticated} />
+        <CRUDActions mode={currentMode} isAdmin={isAdmin} />
       </div>
     </main>
   )

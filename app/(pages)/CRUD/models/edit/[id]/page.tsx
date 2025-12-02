@@ -12,7 +12,7 @@ export default async function EditModelPage({
   const session = await getServerSession()
 
   if (!session) {
-    redirect('/')
+    redirect('/login')
   }
 
   const { id } = await params
