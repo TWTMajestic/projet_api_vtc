@@ -7,6 +7,7 @@ export interface SessionUser {
   id: string
   email: string
   name?: string | null
+  role: 'USER' | 'ADMIN'
 }
 
 export async function getServerSession(): Promise<SessionUser | null> {
@@ -21,8 +22,24 @@ export async function getServerSession(): Promise<SessionUser | null> {
         sub: string
         email: string
         name?: string | null
+        role?: 'USER' | 'ADMIN'
       }
-      return { id: payload.sub, email: payload.email, name: payload.name }
+      
+      // Si le token ne contient pas le rôle, le récupérer depuis la BDD
+      if (!payload.role) {
+        const user = await prisma.user.findUnique({
+          where: { id: payload.sub },
+          select: { role: true }
+        })
+        return { 
+          id: payload.sub, 
+          email: payload.email, 
+          name: payload.name, 
+          role: user?.role || 'USER' 
+        }
+      }
+      
+      return { id: payload.sub, email: payload.email, name: payload.name, role: payload.role }
     } catch (error) {
       if (!(error instanceof jwt.TokenExpiredError)) {
         return null
@@ -44,10 +61,11 @@ export async function getServerSession(): Promise<SessionUser | null> {
       signAccessToken({
         sub: user.id,
         email: user.email,
-        name: user.name
+        name: user.name,
+        role: user.role
       })
 
-      return { id: user.id, email: user.email, name: user.name }
+      return { id: user.id, email: user.email, name: user.name, role: user.role }
     } catch {
       return null
     }

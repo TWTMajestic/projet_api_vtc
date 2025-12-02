@@ -10,6 +10,10 @@ export default async function CreateSellerPage() {
     redirect('/')
   }
 
+  if (session.role !== 'ADMIN') {
+    redirect('/home')
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-slate-100 p-6">
       <section className="w-full max-w-2xl rounded-lg bg-white p-8 shadow">

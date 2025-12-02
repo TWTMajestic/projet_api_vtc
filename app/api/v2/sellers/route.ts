@@ -17,6 +17,13 @@ export async function POST(request: NextRequest) {
   const auth = requireAuth(request)
   if (!auth.authenticated) return auth.response
 
+  if (auth.user.role !== 'ADMIN') {
+    return NextResponse.json(
+      { error: 'Seuls les administrateurs peuvent gérer les vendeurs' },
+      { status: 403 }
+    )
+  }
+
   try {
     const body = await request.json()
     const name = body?.name?.toString().trim()

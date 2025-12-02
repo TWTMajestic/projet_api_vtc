@@ -15,6 +15,10 @@ export default async function EditSellerPage({
     redirect('/')
   }
 
+  if (session.role !== 'ADMIN') {
+    redirect('/home')
+  }
+
   const { id } = await params
 
   const seller = await prisma.seller.findUnique({

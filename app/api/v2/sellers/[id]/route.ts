@@ -29,6 +29,13 @@ export async function PATCH(request: NextRequest, props: Props) {
   const auth = requireAuth(request)
   if (!auth.authenticated) return auth.response
 
+  if (auth.user.role !== 'ADMIN') {
+    return NextResponse.json(
+      { error: 'Seuls les administrateurs peuvent gérer les vendeurs' },
+      { status: 403 }
+    )
+  }
+
   try {
     const params = await props.params
     const body = await request.json()
@@ -86,6 +93,13 @@ export async function PATCH(request: NextRequest, props: Props) {
 export async function DELETE(request: NextRequest, props: Props) {
   const auth = requireAuth(request)
   if (!auth.authenticated) return auth.response
+
+  if (auth.user.role !== 'ADMIN') {
+    return NextResponse.json(
+      { error: 'Seuls les administrateurs peuvent gérer les vendeurs' },
+      { status: 403 }
+    )
+  }
 
   try {
     const params = await props.params

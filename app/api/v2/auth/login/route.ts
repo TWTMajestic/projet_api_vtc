@@ -38,7 +38,8 @@ export async function POST(request: Request) {
     const accessToken = signAccessToken({
       sub: user.id,
       email: user.email,
-      name: user.name
+      name: user.name,
+      role: user.role
     })
 
     const refreshToken = signRefreshToken({
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
       data: {
         accessToken,
         refreshToken,
-        user: { id: user.id, email: user.email, name: user.name }
+        user: { id: user.id, email: user.email, name: user.name, role: user.role }
       }
     })
 
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
       name: 'auth_token',
       value: accessToken,
       httpOnly: true,
-      maxAge: 30,
+      maxAge: 60 * 5,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       path: '/'

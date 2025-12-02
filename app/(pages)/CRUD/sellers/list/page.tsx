@@ -23,6 +23,10 @@ export default async function SellersListPage() {
     redirect('/')
   }
 
+  if (session.role !== 'ADMIN') {
+    redirect('/home')
+  }
+
   const sellers = await getSellers()
 
   return (

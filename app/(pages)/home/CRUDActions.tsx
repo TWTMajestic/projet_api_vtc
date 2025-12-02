@@ -3,24 +3,29 @@
 import Link from 'next/link'
 import { ReactNode } from 'react'
 
-type Mode = 'vehicles' | 'models' | 'sellers'
+type Mode = 'vehicles' | 'models' | 'sellers' | 'users'
 
 type CRUDActionsProps = {
   mode: Mode
+  isAdmin?: boolean
 }
 
-const crudConfig: Record<Mode, {
+type ActionConfig = {
   title: string
-  actions: {
-    title: string
-    description: string
-    href: string
-    icon: ReactNode
-    color: string
-    textColor: string
-    bgColor: string
-  }[]
-}> = {
+  description: string
+  href: string
+  icon: ReactNode
+  color: string
+  textColor: string
+  bgColor: string
+}
+
+type ModeConfig = {
+  title: string
+  actions: ActionConfig[]
+}
+
+const crudConfig: Record<Mode, ModeConfig> = {
   vehicles: {
     title: 'Gestion des véhicules',
     actions: [
@@ -113,10 +118,49 @@ const crudConfig: Record<Mode, {
         bgColor: 'bg-green-50'
       },
     ]
+  },
+  users: {
+    title: 'Gestion des utilisateurs',
+    actions: [
+      {
+        title: 'Créer un utilisateur',
+        description: 'Ajouter un nouvel utilisateur au système',
+        href: '/CRUD/users/create',
+        icon: (
+          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+          </svg>
+        ),
+        color: 'bg-purple-500 hover:bg-purple-600',
+        textColor: 'text-purple-600',
+        bgColor: 'bg-purple-50'
+      },
+      {
+        title: 'Gérer les utilisateurs',
+        description: 'Voir, modifier et supprimer les utilisateurs',
+        href: '/CRUD/users/list',
+        icon: (
+          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        ),
+        color: 'bg-green-500 hover:bg-green-600',
+        textColor: 'text-green-600',
+        bgColor: 'bg-green-50'
+      },
+    ]
   }
 }
 
-export default function CRUDActions({ mode }: CRUDActionsProps) {
+export default function CRUDActions({ mode, isAdmin = false }: CRUDActionsProps) {
+  if ((mode === 'users' || mode === 'sellers') && !isAdmin) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-slate-600">Accès réservé aux administrateurs</p>
+      </div>
+    )
+  }
+
   const config = crudConfig[mode]
 
   return (
@@ -157,4 +201,3 @@ export default function CRUDActions({ mode }: CRUDActionsProps) {
     </div>
   )
 }
-

@@ -56,13 +56,14 @@ export async function POST(request: NextRequest) {
     const newAccessToken = signAccessToken({
       sub: user.id,
       email: user.email,
-      name: user.name
+      name: user.name,
+      role: user.role
     })
 
     const response = NextResponse.json({
       data: {
         accessToken: newAccessToken,
-        user: { id: user.id, email: user.email, name: user.name }
+        user: { id: user.id, email: user.email, name: user.name, role: user.role }
       }
     })
 
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
       name: 'auth_token',
       value: newAccessToken,
       httpOnly: true,
-      maxAge: 30,
+      maxAge: 60 * 5,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       path: '/'
