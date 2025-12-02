@@ -6,7 +6,7 @@ const RATE_LIMIT_MAX = 20; // 20 requests per window
 
 const ipRequests = new Map<string, { count: number; startTime: number }>();
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   if (!request.nextUrl.pathname.startsWith('/api')) {
     return NextResponse.next();
   }
