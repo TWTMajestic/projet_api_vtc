@@ -10,7 +10,7 @@ export default async function CreateUserPage() {
     redirect('/login')
   }
 
-  if (session.role !== 'ADMIN') {
+  if (!session || session.role !== 'ADMIN') {
     redirect('/home')
   }
 

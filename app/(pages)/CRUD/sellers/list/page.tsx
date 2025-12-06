@@ -20,7 +20,7 @@ export default async function SellersListPage() {
   const session = await getServerSession()
   const isAuthenticated = !!session
 
-  if (session.role !== 'ADMIN') {
+  if (!session || session.role !== 'ADMIN') {
     redirect('/home')
   }
 
