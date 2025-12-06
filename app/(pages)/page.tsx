@@ -25,14 +25,30 @@ export default async function HomePage({
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl font-bold text-slate-800">Tableau de bord</h1>
             {isAuthenticated ? (
-              <ProfileMenu name={session.name ?? null} email={session.email} />
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/swagger"
+                  className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
+                >
+                  API Docs
+                </Link>
+                <ProfileMenu name={session.name ?? null} email={session.email} />
+              </div>
             ) : (
-              <Link
-                href="/login"
-                className="rounded-md bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
-              >
-                Se connecter
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/swagger"
+                  className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
+                >
+                  API Docs
+                </Link>
+                <Link
+                  href="/login"
+                  className="rounded-md bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                >
+                  Se connecter
+                </Link>
+              </div>
             )}
           </div>
           <p className="text-slate-600">Gérez vos données avec les opérations CRUD</p>

@@ -47,12 +47,21 @@ export default function SwaggerPage() {
   }, []);
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: "100vh", width: "100%", backgroundColor: "#ffffff" }}>
       <div id="swagger-ui" />
       <style jsx global>{`
-        body {
+        html, body {
           margin: 0;
           padding: 0;
+          background-color: #ffffff !important;
+          color: #3b4151 !important;
+          color-scheme: light !important;
+        }
+        .swagger-ui {
+          background-color: #ffffff !important;
+        }
+        .swagger-ui .wrapper {
+          background-color: #ffffff !important;
         }
         .swagger-ui .topbar {
           display: none;
